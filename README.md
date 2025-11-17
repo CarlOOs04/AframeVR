@@ -1,2 +1,3 @@
 # AframeVR
-[1. Figuras](https://carloos04.github.io/AframeVR/ejemplo1/ejemplo1.html)
+1. [Figuras](Ejemplo1/ejemplo1.html)
+
