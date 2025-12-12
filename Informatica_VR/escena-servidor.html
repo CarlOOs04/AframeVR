@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Servidor Configurable - Centro de Datos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
+  <style>body{margin:0;font-family:system-ui,Arial,Helvetica,sans-serif}</style>
+</head>
+<body>
+  <a-scene embedded>
+    <a-assets>
+      <a-asset-item id="serverModel" src="assets/models/server-chassis-lowpoly.glb"></a-asset-item>
+    </a-assets>
+
+    <a-entity id="cameraRig">
+      <a-entity camera position="0 1.6 2.6" look-controls>
+        <a-entity cursor="rayOrigin: mouse" raycaster="objects: .clickable" geometry="primitive: ring; radiusInner:0.01; radiusOuter:0.02" material="shader: flat"></a-entity>
+      </a-entity>
+    </a-entity>
+
+    <a-entity position="0 0 -1.2">
+      <a-gltf-model src="#serverModel" scale="1.2 1.2 1.2" rotation="0 180 0" class="clickable"></a-gltf-model>
+    </a-entity>
+
+    <a-entity id="configUI" position="1.6 1.4 -1.0">
+      <a-plane width="1.6" height="1.2" color="#0b1220" opacity="0.95"></a-plane>
+      <a-text value="Configurador de Servidor" position="-0.7 0.45 0.01" color="#fff"></a-text>
+
+      <a-box id="btn-cpu" class="clickable" width="1.4" height="0.16" depth="0.02" position="0 0.12 0.01"
+             event-set__enter="_event: mouseenter; scale:1.02 1.02 1.02" onclick="toggleComponent('cpu')">
+        <a-text id="cpuText" value="CPU: 1 x 8 cores (ON)" position="-0.66 -0.04 0.03" color="#fff"></a-text>
+      </a-box>
+
+      <a-box id="btn-ram" class="clickable" width="1.4" height="0.16" depth="0.02" position="0 -0.06 0.01"
+             onclick="toggleComponent('ram')">
+        <a-text id="ramText" value="RAM: 32 GB (ON)" position="-0.66 -0.04 0.03" color="#fff"></a-text>
+      </a-box>
+
+      <a-box id="btn-disk" class="clickable" width="1.4" height="0.16" depth="0.02" position="0 -0.24 0.01"
+             onclick="toggleComponent('disk')">
+        <a-text id="diskText" value="Storage: 1 TB SSD (ON)" position="-0.66 -0.04 0.03" color="#fff"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity id="panel" position="-1.8 1.2 -1.0">
+      <a-plane width="1.6" height="1.0" color="#071026" opacity="0.96"></a-plane>
+      <a-text id="uptime" value="Uptime: 0h 0m" position="-0.7 0.36 0.01" color="#9be7ff"></a-text>
+      <a-text id="cpuVal" value="CPU (%) : 0" position="-0.7 0.14 0.01" color="#fff"></a-text>
+      <a-text id="ramVal" value="RAM (%) : 0" position="-0.7 -0.06 0.01" color="#fff"></a-text>
+      <a-text id="tempVal" value="Temp (ºC): 30" position="-0.7 -0.26 0.01" color="#fff"></a-text>
+      <a-text id="score" value="Puntuación: 0" position="-0.7 -0.46 0.01" color="#ffd166"></a-text>
+    </a-entity>
+
+    <a-entity position="-1.7 1.8 -1.2">
+      <a-box width="0.6" height="0.2" depth="0.05" color="#0b84ff" class="clickable"
+             onclick="location.href='index.html'">
+        <a-text value="Volver" align="center" position="-0.26 -0.05 0.03"></a-text>
+      </a-box>
+    </a-entity>
+
+    <script>
+      const state = { cpu: 12, ram: 28, temp: 34, uptimeSec: 0, score: 0 };
+      const components = { cpu: true, ram: true, disk: true };
+
+      function updatePanel() {
+        document.getElementById('cpuVal').setAttribute('value', 'CPU (%) : ' + Math.round(state.cpu));
+        document.getElementById('ramVal').setAttribute('value', 'RAM (%) : ' + Math.round(state.ram));
+        document.getElementById('tempVal').setAttribute('value', 'Temp (ºC): ' + Math.round(state.temp));
+        document.getElementById('uptime').setAttribute('value', 'Uptime: ' + Math.floor(state.uptimeSec/3600) + 'h ' + Math.floor((state.uptimeSec%3600)/60) + 'm');
+        document.getElementById('score').setAttribute('value', 'Puntuación: ' + state.score);
+      }
+
+      function tick() {
+        state.uptimeSec += 5;
+        let loadFactor = (components.cpu ? 1 : 0.6) + (components.ram ? 1 : 0.7) + (components.disk ? 1 : 0.8);
+        state.cpu = 10 + Math.random() * 30 * loadFactor;
+        state.ram = 20 + Math.random() * 40 * loadFactor;
+        state.temp = 30 + (state.cpu / 10) + Math.random() * 2;
+        state.score = Math.round((components.cpu && components.ram && components.disk) ? 100 - (state.temp - 30) : 60 - (state.temp - 30));
+        updatePanel();
+      }
+
+      function toggleComponent(name) {
+        components[name] = !components[name];
+        const txtId = { cpu: 'cpuText', ram: 'ramText', disk: 'diskText' }[name];
+        document.getElementById(txtId).setAttribute('value', name.toUpperCase() + ': ' + (components[name] ? 'ON' : 'OFF'));
+      }
+
+      setInterval(tick, 5000);
+      updatePanel();
+    </script>
+  </a-scene>
+</body>
+</html>
