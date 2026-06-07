@@ -1,83 +1,192 @@
 <!doctype html>
 <html lang="es">
+
 <head>
-  <meta charset="utf-8"/>
-  <title>Rack Interactivo - Centro de Datos</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
-  <style>body{margin:0;font-family:system-ui,Arial,Helvetica,sans-serif}</style>
+    <meta charset="utf-8" />
+    <title>Rack Interactivo - Centro de Datos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: #0b84ff;
+            font-family: system-ui;
+            font-size: 13px;
+            z-index: 999;
+            max-width: 300px;
+        }
+
+        a.btn-back {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 12px 16px;
+            background: #0b84ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-family: system-ui;
+            font-size: 13px;
+        }
+
+        #info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: #00ff00;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
 </head>
+
 <body>
-  <a-scene embedded>
-    <a-assets>
-      <a-asset-item id="rackModel" src="assets/models/rack-lowpoly.glb"></a-asset-item>
-      <img id="floorTex" src="assets/textures/floor.jpg" />
-      <audio id="clickSfx" src="assets/sounds/click.mp3"></audio>
-    </a-assets>
+    <div id="ui">
+        <strong>Rack Interactivo</strong><br />
+        Haz clic en las unidades (U) para ver detalles
+    </div>
+    <div id="info">
+        Haz clic en los racks →
+    </div>
+    <a href="index.html" class="btn-back">← Volver al menú</a>
 
-    <a-entity id="cameraRig">
-      <a-entity camera position="0 1.6 3" look-controls>
-        <a-entity cursor="fuse: true; fuseTimeout: 800"
-                  raycaster="objects: .clickable"
-                  geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
-                  material="shader: flat; opacity: 0.9"></a-entity>
-      </a-entity>
-    </a-entity>
+    <a-scene background="color:#000000">
+        <a-sky color="#0a0a0a"></a-sky>
 
-    <a-plane rotation="-90 0 0" width="20" height="20" src="#floorTex" repeat="10 10"></a-plane>
-    <a-entity light="type: ambient; intensity:0.45"></a-entity>
-    <a-entity light="type: spot; intensity:0.9; angle:30" position="0 6 3"></a-entity>
+        <!-- Luz ambiental -->
+        <a-light type="ambient" color="#ffffff" intensity="0.5"></a-light>
 
-    <a-entity position="0 0 -1.5">
-      <a-gltf-model src="#rackModel" scale="1 1 1" rotation="0 180 0" shadow="cast: true" class="interactive-model"></a-gltf-model>
-    </a-entity>
+        <!-- Luz focal sobre racks -->
+        <a-light type="directional" color="#00ff00" intensity="0.6" position="0 2 2"></a-light>
 
-    <a-sphere class="clickable hotspot" position="0 1.6 -1.2" radius="0.06"
-              material="color:#ffb300; opacity:0.95"
-              event-set__enter="_event: mouseenter; scale: 1.3 1.3 1.3"
-              event-set__leave="_event: mouseleave; scale: 1 1 1"
-              onclick="showInfo('U: Unidad 3 - SSD 1TB - Estado: OK')">
-      <a-text value="Unidad 3" align="center" position="0 0.25 0" color="#000" width="1.4"></a-text>
-    </a-sphere>
+        <!-- Cámara -->
+        <a-camera position="0 1.6 3" look-controls=""></a-camera>
 
-    <a-sphere class="clickable hotspot" position="-0.45 1.2 -1.28" radius="0.06"
-              material="color:#ef4444; opacity:0.95"
-              onclick="showInfo('U: Fuente PSU - Temperatura alta (75°C)')">
-      <a-text value="PSU" align="center" position="0 0.25 0" color="#000" width="1.2"></a-text>
-    </a-sphere>
+        <!-- Suelo -->
+        <a-plane position="0 0 0" rotation="-90 0 0" width="15" height="15" color="#0a0a0a"></a-plane>
 
-    <a-entity id="infoPanel" visible="false" position="1.6 1.2 -1.2">
-      <a-plane width="1.2" height="0.7" color="#111" opacity="0.92"></a-plane>
-      <a-text id="infoText" value="" position="-0.54 0.15 0.01" wrap-count="30" color="#fff"></a-text>
-      <a-box position="0.45 -0.22 0.01" width="0.2" height="0.12" depth="0.02" color="#0b84ff"
-             class="clickable" onclick="document.getElementById('infoPanel').setAttribute('visible','false')">
-        <a-text value="Cerrar" align="center" position="-0.08 -0.04 0.03" color="#fff"></a-text>
-      </a-box>
-    </a-entity>
+        <!-- RACK 1: 42U estándar (izquierda) -->
+        <a-group position="-3 0 -2">
+            <!-- Marco del rack -->
+            <a-box position="0 2 0" width="0.6" height="4" depth="0.5" color="#1a1a1a" opacity="0.5"></a-box>
 
-    <a-entity position="-1.7 1.8 -1.2">
-      <a-box width="0.6" height="0.2" depth="0.05" color="#0b84ff" class="clickable"
-             onclick="location.href='index.html'">
-        <a-text value="Volver" align="center" position="-0.26 -0.05 0.03"></a-text>
-      </a-box>
-    </a-entity>
+            <!-- Unidades (U) del rack -->
+            <a-box id="u1" position="0 3.5 0.3" width="0.7" height="0.2" depth="0.7" color="#00ff00"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #00ff00"></a-box>
+            <a-text position="0.5 3.5 0.3" value="U1: Router" color="#00ff00" scale="0.6 0.6 0.6"></a-text>
+
+            <a-box id="u2" position="0 3.1 0.3" width="0.7" height="0.2" depth="0.7" color="#00ff00"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #00ff00"></a-box>
+            <a-text position="0.5 3.1 0.3" value="U2: Switch" color="#00ff00" scale="0.6 0.6 0.6"></a-text>
+
+            <a-box id="u3" position="0 2.7 0.3" width="0.7" height="0.2" depth="0.7" color="#ff6600"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #ff6600"></a-box>
+            <a-text position="0.5 2.7 0.3" value="U3: Firewall" color="#ff6600" scale="0.6 0.6 0.6"></a-text>
+
+            <a-box id="u4" position="0 2.3 0.3" width="0.7" height="0.2" depth="0.7" color="#0b84ff"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #0b84ff"></a-box>
+            <a-text position="0.5 2.3 0.3" value="U4: Servidor" color="#0b84ff" scale="0.6 0.6 0.6"></a-text>
+
+            <!-- Etiqueta del rack -->
+            <a-text position="0 0.2 0.5" value="RACK A (Producción)" color="#00ff00" scale="0.8 0.8 0.8"></a-text>
+        </a-group>
+
+        <!-- RACK 2: Backup (centro) -->
+        <a-group position="0 0 -2">
+            <a-box position="0 2 0" width="0.6" height="4" depth="0.5" color="#1a1a1a" opacity="0.5"></a-box>
+
+            <a-box id="u5" position="0 3.3 0.3" width="0.7" height="0.2" depth="0.7" color="#ff00ff"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #ff00ff"></a-box>
+            <a-text position="0.5 3.3 0.3" value="U5: NAS" color="#ff00ff" scale="0.6 0.6 0.6"></a-text>
+
+            <a-box id="u6" position="0 2.9 0.3" width="0.7" height="0.2" depth="0.7" color="#ff00ff"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #ff00ff"></a-box>
+            <a-text position="0.5 2.9 0.3" value="U6: NAS" color="#ff00ff" scale="0.6 0.6 0.6"></a-text>
+
+            <a-box id="u7" position="0 2.5 0.3" width="0.7" height="0.2" depth="0.7" color="#00ff00"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #00ff00"></a-box>
+            <a-text position="0.5 2.5 0.3" value="U7: Switch" color="#00ff00" scale="0.6 0.6 0.6"></a-text>
+
+            <a-text position="0 0.2 0.5" value="RACK B (Backup)" color="#ff00ff" scale="0.8 0.8 0.8"></a-text>
+        </a-group>
+
+        <!-- RACK 3: Desarrollo (derecha) -->
+        <a-group position="3 0 -2">
+            <a-box position="0 2 0" width="0.6" height="4" depth="0.5" color="#1a1a1a" opacity="0.5"></a-box>
+
+            <a-box id="u8" position="0 3.2 0.3" width="0.7" height="0.2" depth="0.7" color="#ffff00"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #ffff00"></a-box>
+            <a-text position="0.5 3.2 0.3" value="U8: Test" color="#ffff00" scale="0.6 0.6 0.6"></a-text>
+
+            <a-box id="u9" position="0 2.8 0.3" width="0.7" height="0.2" depth="0.7" color="#00ffff"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #00ffff"></a-box>
+            <a-text position="0.5 2.8 0.3" value="U9: Dev" color="#00ffff" scale="0.6 0.6 0.6"></a-text>
+
+            <a-box id="u10" position="0 2.4 0.3" width="0.7" height="0.2" depth="0.7" color="#00ffff"
+                event-set__enter="_event: mouseenter; color: #00ffff"
+                event-set__leave="_event: mouseleave; color: #00ffff"></a-box>
+            <a-text position="0.5 2.4 0.3" value="U10: Dev" color="#00ffff" scale="0.6 0.6 0.6"></a-text>
+
+            <a-text position="0 0.2 0.5" value="RACK C (Desarrollo)" color="#ffff00" scale="0.8 0.8 0.8"></a-text>
+        </a-group>
+
+        <!-- Botón para siguiente escena -->
+        <a-box position="0 3.5 2" width="2" height="1" depth="0.3" color="#0b84ff"
+            text="value: SIGUIENTE →; align: center; anchor: center; color: #ffffff;" opacity="0.9"
+            event-set__enter="_event: mouseenter; color: #00ffff" event-set__leave="_event: mouseleave; color: #0b84ff"
+            class="next-btn"></a-box>
+    </a-scene>
 
     <script>
-      function showInfo(text) {
-        const panel = document.getElementById('infoPanel');
-        const info = document.getElementById('infoText');
-        info.setAttribute('value', text);
-        panel.setAttribute('visible', true);
-      }
-      document.addEventListener('DOMContentLoaded', () => {
-        const hotspots = Array.from(document.querySelectorAll('.hotspot'));
-        hotspots.forEach(h => {
-          h.addEventListener('mouseenter', () => { h.object3D.scale.set(1.2,1.2,1.2); });
-          h.addEventListener('mouseleave', () => { h.object3D.scale.set(1,1,1); });
+        // Información detallada para cada unidad
+        const info = {
+            u1: 'Router Core - CISCO ASR 9000',
+            u2: 'Switch de distribución - CISCO Nexus 7000',
+            u3: 'Firewall - Palo Alto Networks',
+            u4: 'Servidor - HP ProLiant DL380 Gen10',
+            u5: 'NAS - Almacenamiento de datos principales',
+            u6: 'NAS - Redundancia y sincronización',
+            u7: 'Switch de Backup - CISCO Catalyst',
+            u8: 'Servidor Test - Para pruebas',
+            u9: 'Servidor Desarrollo - BD de pruebas',
+            u10: 'Servidor Desarrollo - Aplicaciones'
+        };
+
+        Object.keys(info).forEach(id => {
+            document.getElementById(id).addEventListener('click', () => {
+                document.getElementById('info').innerHTML = '<strong>Unidad seleccionada:</strong><br/>' + info[id];
+            });
         });
-      });
+
+        // Botón siguiente
+        document.querySelector('.next-btn').addEventListener('click', () => {
+            window.location.href = 'escena-servidor.html';
+        });
     </script>
-  </a-scene>
 </body>
+
 </html>
