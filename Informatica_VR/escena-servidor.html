@@ -2,30 +2,81 @@
 <html lang="es">
 <head>
     <meta charset="utf-8" />
-    <title>Sala 360° con Físicas</title>
+    <title>Servidor Interactivo - Diagnóstico</title>
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.1.0/dist/aframe-physics-system.min.js"></script>
+    <style>
+        /* Estilos del Panel Modal */
+        #info-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95); color: #00ff00;
+            padding: 40px; border: 3px solid #00ff00;
+            border-radius: 20px; font-family: 'Courier New', monospace;
+            display: none; z-index: 1000; width: 450px;
+        }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .close-btn { 
+            background: #ff0000; color: white; border: none; 
+            padding: 10px 20px; cursor: pointer; float: right; font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-    <a-scene physics="debug: false">
+    <div id="info-modal">
+        <h2>CONFIGURACIÓN DEL SISTEMA</h2>
+        <div class="data-grid">
+            <div><strong>CPU:</strong> Intel Xeon 3.2GHz</div>
+            <div><strong>RAM:</strong> 128GB DDR4 ECC</div>
+            <div><strong>SSD:</strong> 4x 2TB NVMe</div>
+            <div><strong>IP:</strong> 192.168.1.50</div>
+            <div><strong>VLAN:</strong> 10 (Gestión)</div>
+            <div><strong>OS:</strong> Ubuntu Server 24.04</div>
+        </div>
+        <button class="close-btn" onclick="cerrarModal()">[CERRAR]</button>
+    </div>
+
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
         <a-assets>
-            <a-asset-item id="room-model" src="assets/models/server_room.glb"></a-asset-item>
+            <a-asset-item id="server-model" src="/assets/models/server_v2_console.glb"></a-asset-item>
         </a-assets>
 
-        <a-camera position="0 1.6 0" kinematic-body look-controls wasd-controls>
-            <a-cursor></a-cursor>
-        </a-camera>
+        <a-camera position="0 1.6 2"><a-cursor></a-cursor></a-camera>
 
-        <a-entity gltf-model="#room-model" position="0 0 0"></a-entity>
+        <a-entity 
+            id="servidor"
+            gltf-model="#server-model" 
+            position="0 -1.5 -2" 
+            rotation="0 -90 0" 
+            scale="1 1 1">
+            
+            <a-text id="temp-text" value="Temp. CPU: --°C" position="0 2.5 0" align="center" scale="2 2 2" color="#00ff00"></a-text>
 
-        <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" visible="false" static-body></a-plane>
+            <a-box id="btn-click" class="clickable" position="0 1.5 0" opacity="0" transparent="true"></a-box>
+        </a-entity>
 
-        <a-box position="0 2 -10" width="20" height="5" depth="0.1" visible="false" color="red" static-body></a-box>
-        <a-box position="0 2 10" width="20" height="5" depth="0.1" visible="false" color="red" static-body></a-box>
-        <a-box position="10 2 0" width="0.1" height="5" depth="20" visible="false" color="red" static-body></a-box>
-        <a-box position="-10 2 0" width="0.1" height="5" depth="20" visible="false" color="red" static-body></a-box>
-
+        <a-sky color="#050505"></a-sky>
+        <a-light type="ambient" intensity="0.8"></a-light>
     </a-scene>
+
+    <script>
+        const modal = document.getElementById('info-modal');
+        const servidor = document.getElementById('servidor');
+        const btnClick = document.getElementById('btn-click');
+
+        btnClick.addEventListener('click', () => {
+            modal.style.display = 'block';
+            servidor.setAttribute('animation', {
+                property: 'scale',
+                to: '1.05 1.05 1.05',
+                dur: 300,
+                dir: 'alternate',
+                loop: 2
+            });
+        });
+
+        function cerrarModal() {
+            modal.style.display = 'none';
+        }
+    </script>
 </body>
 </html>
