@@ -1,114 +1,31 @@
 <!doctype html>
 <html lang="es">
-
 <head>
     <meta charset="utf-8" />
-    <title>Sala 360° - Centro de Datos</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sala 360° con Físicas</title>
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: #000;
-        }
-
-        #ui {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px 20px;
-            border-radius: 8px;
-            color: #0b84ff;
-            font-family: system-ui;
-            font-size: 13px;
-            z-index: 999;
-        }
-
-        a.btn-back {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            padding: 12px 16px;
-            background: #0b84ff;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-family: system-ui;
-            font-size: 13px;
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.1.0/dist/aframe-physics-system.min.js"></script>
 </head>
-
 <body>
-    <div id="ui">
-        <strong>Sala 360°</strong><br />
-        Mira a tu alrededor - Haz clic en los puntos interactivos
-    </div>
-    <a href="index.html" class="btn-back">← Volver al menú</a>
 
-    <a-scene background="color:#1a1a1a">
-        <!-- Cielo 360° con textura de sala de servidores -->
-        <a-sky id="sky" color="#0b0f14"></a-sky>
+    <a-scene physics="debug: false">
+        <a-assets>
+            <a-asset-item id="room-model" src="assets/models/server_room.glb"></a-asset-item>
+        </a-assets>
 
-        <!-- Luz ambiental -->
-        <a-light type="ambient" color="#ffffff" intensity="0.6"></a-light>
+        <a-camera position="0 1.6 0" kinematic-body look-controls wasd-controls>
+            <a-cursor></a-cursor>
+        </a-camera>
 
-        <!-- Luz direccional (simula iluminación de servidor) -->
-        <a-light type="directional" color="#0b84ff" intensity="0.4" position="5 10 5"></a-light>
+        <a-entity gltf-model="#room-model" position="0 0 0"></a-entity>
 
-        <!-- Cámara -->
-        <a-camera position="0 1.6 0"></a-camera>
+        <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" visible="false" static-body></a-plane>
 
-        <!-- Pared frontal con texto de sistema -->
-        <a-box position="0 2 -5" width="10" height="4" depth="0.5" color="#071026"
-            text="value: CENTRO DE DATOS; align: center; anchor: center; color: #0b84ff; fontSize: 30;"
-            event-set__enter="_event: mouseenter; color: #00ffff"
-            event-set__leave="_event: mouseleave; color: #071026"></a-box>
+        <a-box position="0 2 -10" width="20" height="5" depth="0.1" visible="false" color="red" static-body></a-box>
+        <a-box position="0 2 10" width="20" height="5" depth="0.1" visible="false" color="red" static-body></a-box>
+        <a-box position="10 2 0" width="0.1" height="5" depth="20" visible="false" color="red" static-body></a-box>
+        <a-box position="-10 2 0" width="0.1" height="5" depth="20" visible="false" color="red" static-body></a-box>
 
-        <!-- Punto 1: Panel de monitoreo (izquierda) -->
-        <a-cylinder position="-4 1.5 0" radius="0.3" height="2" color="#00ff00" opacity="0.7"
-            event-set__enter="_event: mouseenter; color: #ffff00"
-            event-set__leave="_event: mouseleave; color: #00ff00"></a-cylinder>
-        <a-text position="-4 0.5 0.3" value="Monitor 1" color="#00ff00" scale="1 1 1"></a-text>
-
-        <!-- Punto 2: Generador de energía (derecha) -->
-        <a-cylinder position="4 1.5 0" radius="0.3" height="2" color="#ff6600" opacity="0.7"
-            event-set__enter="_event: mouseenter; color: #ffff00"
-            event-set__leave="_event: mouseleave; color: #ff6600"></a-cylinder>
-        <a-text position="4 0.5 0.3" value="Energía" color="#ff6600" scale="1 1 1"></a-text>
-
-        <!-- Punto 3: Sistema de refrigeración (arriba) -->
-        <a-sphere position="0 3 -3" radius="0.4" color="#00ccff" opacity="0.7"
-            event-set__enter="_event: mouseenter; color: #ffff00"
-            event-set__leave="_event: mouseleave; color: #00ccff"></a-sphere>
-        <a-text position="0 3.8 -3" value="Refrigeración" color="#00ccff" scale="1 1 1"></a-text>
-
-        <!-- Punto 4: Servidor principal (centro bajo) -->
-        <a-box position="0 0.8 -2" width="1.5" height="1.5" depth="1.5" color="#0b84ff" opacity="0.8"
-            event-set__enter="_event: mouseenter; color: #00ffff"
-            event-set__leave="_event: mouseleave; color: #0b84ff"></a-box>
-        <a-text position="0 -0.5 -2" value="Servidor Principal" color="#0b84ff" scale="1 1 1"></a-text>
-
-        <!-- Suelo -->
-        <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#0a0a0a" metalness="0.6"
-            roughness="0.4"></a-plane>
-
-        <!-- Transición a escena siguiente -->
-        <a-box position="0 1.5 4" width="2" height="2" depth="0.3" color="#0b84ff"
-            text="value: IR AL RACK; align: center; anchor: center; color: #ffffff;" href="escena-rack.html"></a-box>
     </a-scene>
-
-    <script>
-        // Efectos de interacción adicionales
-        document.querySelectorAll('[event-set__enter]').forEach(el => {
-            el.addEventListener('click', function () {
-                alert('Objeto: ' + (el.getAttribute('text')?.value || 'Punto de interés'));
-            });
-        });
-    </script>
 </body>
-
 </html>
