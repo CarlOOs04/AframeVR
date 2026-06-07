@@ -1,32 +1,84 @@
 <!doctype html>
 <html lang="es">
+
 <head>
-  <meta charset="utf-8" />
-  <title>Tour VR - Centro de Datos (Index)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="assets/textures/floor.jpg" />
-  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
-  <style>
-    body { margin:0; font-family: system-ui, sans-serif; background:#0b0f14; color:#e6eef6; }
-    .menu { padding: 28px; max-width:960px; margin:40px auto; background:#071026; border-radius:12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-    h1 { margin:0 0 8px 0; font-size:24px; }
-    p { margin:6px 0; color:#cfe9ff; }
-    a.button { display:inline-block; padding:12px 18px; margin:10px 10px 0 0; background:#0b84ff; color:white; text-decoration:none; border-radius:8px; }
-    footer { margin-top:18px; font-size:13px; color:#9fb6d4; }
-  </style>
+    <meta charset="utf-8" />
+    <title>Tour VR - Centro de Datos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0b0f14;
+            color: #e6eef6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .menu {
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            background: #0f172a;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        h1 { margin-bottom: 20px; font-size: 28px; color: #38bdf8; }
+
+        .desc-box { 
+            background: rgba(56, 189, 248, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .button-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        a.button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: #0284c7;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        a.button:hover { background: #0369a1; transform: translateY(-2px); }
+
+        footer { margin-top: 30px; font-size: 12px; color: #64748b; }
+    </style>
 </head>
+
 <body>
-  <div class="menu">
-    <h1>Tour VR — Centro de Datos (Informática)</h1>
-    <p><strong>Equipo:</strong> [Nombres] &nbsp; • &nbsp; <strong>Opción:</strong> Informática</p>
-    <p>Tres escenas: Sala 360° → Rack interactivo → Servidor configurable (panel en tiempo real).</p>
-    <p>
-      <a href="escena-360.html" class="button">Entrar: Sala 360°</a>
-      <a href="escena-rack.html" class="button">Entrar: Rack interactivo</a>
-      <a href="escena-servidor.html" class="button">Entrar: Servidor configurable</a>
-    </p>
-    <footer>Instrucciones: en escritorio usa el ratón; en móvil usa el toque; en VR usa controladores o gaze.</footer>
-  </div>
+    <div class="menu">
+        <h1>Centro de Datos VR</h1>
+        <div class="desc-box">
+            <p><strong>Sector:</strong> Profesional [Informática]</p>
+            <p>Explora el flujo: 360° &rarr; Rack &rarr; Servidor</p>
+        </div>
+
+        <nav class="button-grid">
+            <a href="escena-360.html" class="button" aria-label="Entrar a la sala 360">🌐 Entrar: Sala 360°</a>
+            <a href="escena-rack.html" class="button" aria-label="Entrar al rack interactivo">🖥️ Entrar: Rack interactivo</a>
+            <a href="escena-servidor.html" class="button" aria-label="Entrar al servidor configurable">⚙️ Entrar: Servidor configurable</a>
+        </nav>
+
+        <footer>
+            Controles compatibles: Ratón, Táctil, Gafas VR.
+        </footer>
+    </div>
 </body>
+
 </html>
