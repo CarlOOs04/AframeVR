@@ -30,18 +30,18 @@
     <a-entity id="hotspots">
       <a-cylinder class="clickable" position="2 1.2 -3" rotation="90 0 0" height="0.05" radius="0.4"
                   material="color:#0b84ff; opacity:0.95"
-                  event-set__enter="_event: mouseenter; scale: 1.1 1.1 1.1"
-                  event-set__leave="_event: mouseleave; scale: 1 1 1"
+                  event-set__enter="_event: mouseenter; material.color: #3aa0ff"
+                  event-set__leave="_event: mouseleave; material.color: #0b84ff"
                   onclick="location.href='escena-rack.html'">
-        <a-text value="Ir al Rack" align="center" position="0 0 0.06" rotation="-90 0 0" color="#fff" width="2"></a-text>
+        <a-text value="Ir al Rack" align="center" position="0 0.03 0" rotation="0 0 0" color="#fff" width="2"></a-text>
       </a-cylinder>
 
       <a-cylinder class="clickable" position="-2 1.2 -3" rotation="90 0 0" height="0.05" radius="0.4"
                   material="color:#22c55e; opacity:0.95"
-                  event-set__enter="_event: mouseenter; scale: 1.1 1.1 1.1"
-                  event-set__leave="_event: mouseleave; scale: 1 1 1"
+                  event-set__enter="_event: mouseenter; material.color: #4ade80"
+                  event-set__leave="_event: mouseleave; material.color: #22c55e"
                   onclick="location.href='escena-servidor.html'">
-        <a-text value="Configurar Servidor" align="center" position="0 0 0.06" rotation="-90 0 0" color="#fff" width="2"></a-text>
+        <a-text value="Configurar Servidor" align="center" position="0 0.03 0" rotation="0 0 0" color="#fff" width="2"></a-text>
       </a-cylinder>
     </a-entity>
 
