@@ -12,7 +12,6 @@
   <a-scene background="color: #000" embedded>
     <a-assets>
       <img id="sala360" src="assets/360/sala-servidores-360.jpg" crossorigin="anonymous" />
-      <audio id="voice" src="assets/sounds/voice-guide.mp3"></audio>
       <audio id="bg" src="assets/sounds/bg-ambience.mp3" preload="auto"></audio>
     </a-assets>
 
@@ -29,20 +28,20 @@
     </a-entity>
 
     <a-entity id="hotspots">
-      <a-cylinder class="clickable" position="2 1.2 -3" height="0.05" radius="0.4"
+      <a-cylinder class="clickable" position="2 1.2 -3" rotation="90 0 0" height="0.05" radius="0.4"
                   material="color:#0b84ff; opacity:0.95"
                   event-set__enter="_event: mouseenter; scale: 1.1 1.1 1.1"
                   event-set__leave="_event: mouseleave; scale: 1 1 1"
                   onclick="location.href='escena-rack.html'">
-        <a-text value="Ir al Rack" align="center" position="0 0.45 0" color="#fff" width="2"></a-text>
+        <a-text value="Ir al Rack" align="center" position="0 0 0.06" rotation="-90 0 0" color="#fff" width="2"></a-text>
       </a-cylinder>
 
-      <a-cylinder class="clickable" position="-2 1.2 -3" height="0.05" radius="0.4"
+      <a-cylinder class="clickable" position="-2 1.2 -3" rotation="90 0 0" height="0.05" radius="0.4"
                   material="color:#22c55e; opacity:0.95"
                   event-set__enter="_event: mouseenter; scale: 1.1 1.1 1.1"
                   event-set__leave="_event: mouseleave; scale: 1 1 1"
                   onclick="location.href='escena-servidor.html'">
-        <a-text value="Configurar Servidor" align="center" position="0 0.45 0" color="#fff" width="2"></a-text>
+        <a-text value="Configurar Servidor" align="center" position="0 0 0.06" rotation="-90 0 0" color="#fff" width="2"></a-text>
       </a-cylinder>
     </a-entity>
 
@@ -50,7 +49,7 @@
 
     <a-entity position="-1.6 1.0 -1.4">
       <a-plane width="1.8" height="0.7" material="color:#071026; opacity:0.9"></a-plane>
-      <a-text value="Sala de servidores — Haz click en las zonas para avanzar" wrap-count="30" color="#9fd1ff" position="-0.82 0.15 0.01"></a-text>
+      <a-text value="Sala de servidores — Haz click en las zonas para avanzar" wrap-count="30" color="#9fd1ff" position="-0.82 0 0.01"></a-text>
     </a-entity>
 
     <a-entity light="type: ambient; intensity:0.6"></a-entity>
